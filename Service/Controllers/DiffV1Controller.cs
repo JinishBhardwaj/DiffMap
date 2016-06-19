@@ -7,6 +7,10 @@ using DiffService.Helpers.UI;
 
 namespace DiffService.Controllers
 {
+    /// <summary>
+    /// This controller defines api endpoints to recieve and process the Json
+    /// binary data from the client.
+    /// </summary>
     [RoutePrefix("v1/diff")]
     public class DiffV1Controller : ApiController
     {
@@ -32,6 +36,12 @@ namespace DiffService.Controllers
 
         #region Endpoints
 
+        /// <summary>
+        /// This endpoint recieves a Json binary data
+        /// from the client
+        /// </summary>
+        /// <param name="content">Bson stream</param>
+        /// <returns>Http result indicating if the request succeeded or failed</returns>
         [Route("left")]
         public IHttpActionResult Left([ModelBinder(typeof(ByteArrayModelBinder))]byte[] content)
         {
@@ -46,6 +56,12 @@ namespace DiffService.Controllers
             }
         }
 
+        /// <summary>
+        /// This endpoint recieves a Json binary data
+        /// from the client
+        /// </summary>
+        /// <param name="content">Bson stream</param>
+        /// <returns>Http result indicating if the request succeeded or failed</returns>
         [Route("right")]
         public IHttpActionResult Right([ModelBinder(typeof(ByteArrayModelBinder))]byte[] content)
         {
@@ -60,6 +76,10 @@ namespace DiffService.Controllers
             }
         }
 
+        /// <summary>
+        /// The diff result will be available at this endpoint
+        /// </summary>
+        /// <returns>Http result with the diff results</returns>
         [Route("")]
         public IHttpActionResult Get()
         {
