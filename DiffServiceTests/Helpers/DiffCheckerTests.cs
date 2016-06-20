@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DiffService.Helpers.Tests
@@ -22,9 +23,23 @@ namespace DiffService.Helpers.Tests
             var array1 = new byte[] { 1, 2, 3, 4 };
             var array2 = new byte[] { 1, 4, 5, 6 };
 
-            var result = DiffChecker.GetDiff(array1, array2);
-            Assert.AreEqual(typeof(List<Tuple<int, string, string>>), result.GetType());
-            Assert.AreEqual(result.Count, 3);
+            var diff = DiffChecker.GetDiff(array1, array2);
+            Assert.AreEqual(typeof(List<Tuple<int, string, string>>), diff.Results.GetType());
+            Assert.AreEqual(diff.Results.Count, 3);
+        }
+
+        [TestMethod]
+        public void Returns_Diff_When_Two_Base64_String_Are_Passed()
+        {
+            var string1 = "Simple String 1";
+            var encodedString1 = Convert.ToBase64String(Encoding.ASCII.GetBytes(string1));
+
+            var string2 = "Simple String 2";
+            var encodedString2 = Convert.ToBase64String(Encoding.ASCII.GetBytes(string2));
+
+            var diff = DiffChecker.GetDiff(encodedString1, encodedString2);
+            Assert.AreEqual(typeof(List<Tuple<int, string, string>>), diff.Results.GetType());
+            Assert.AreEqual(diff.Results.Count, 1);
         }
     }
 }

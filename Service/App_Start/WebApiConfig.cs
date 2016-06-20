@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Net.Http.Formatting;
+using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 
 namespace DiffService
@@ -14,7 +15,7 @@ namespace DiffService
 
             //config.Routes.MapHttpRoute(
             //    name: "DefaultApi",
-            //    routeTemplate: "api/{controller}/{id}",
+            //    routeTemplate: "api/{controller}/{action}/{id}",
             //    defaults: new { id = RouteParameter.Optional }
             //);
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new DefaultContractResolver();

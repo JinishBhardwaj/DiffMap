@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Common;
 
 namespace DiffService.Helpers
 {
@@ -19,8 +20,15 @@ namespace DiffService.Helpers
         /// <param name="left">First array</param>
         /// <param name="right">Second array</param>
         /// <returns>Diff result as a Tuple</returns>
-        public static List<Tuple<int, string, string>> GetDiff(byte[] left, byte[] right)
+        public static ResultContainer GetDiff(byte[] left, byte[] right)
         {
+            var resultContainer = new ResultContainer();
+
+            if(!AreEqualSize(left, right))
+            {
+                resultContainer.Status = Status.NotSameSize;
+                return resultContainer;
+            }
             var diffList = new List<Tuple<int, string, string>>();
 
             // Get the common length (Take the minimum to avoid any index out of range problems)
@@ -33,6 +41,11 @@ namespace DiffService.Helpers
                 // than 0 then the byte notation is not the same and hence the two
                 // elements are different
                 var result = Math.Abs(left[i] - right[i]);
+
+                //If we have two matching zero's or one's, then the result is 0, otherwise 1.
+                // SO, 1 on 1 = 0, 0 on 0 = 0, 1 on 0 = 1, 0 on 1 = 1.
+                //var result = left[i] ^ right[i];
+
                 if (result > 0)
                 {
                     diffList.Add(Tuple.Create<int, string, string>(i,
@@ -40,7 +53,23 @@ namespace DiffService.Helpers
                                                                    Encoding.ASCII.GetString(new byte[] { right[i] })));
                 }
             }
-            return diffList;
+            if (diffList?.Count > 0) resultContainer.Results = diffList;
+            resultContainer.Status = diffList?.Count == 0 ? Status.AreEqual : Status.SameSizeNotEqual;
+            return resultContainer;
+        }
+
+        /// <summary>
+        /// Creates a Tuple with the diff results of the two provided byte
+        /// arrays. The tuple contains (Index, Diff element from first array, Diff element from second array)
+        /// </summary>
+        /// <param name="left">First base64 encoded string</param>
+        /// <param name="right">Second base64 encoded string</param>
+        /// <returns>Diff result as a Tuple</returns>
+        public static ResultContainer GetDiff(string left, string right)
+        {
+            var leftBytes = left.ToBytes();
+            var rightBytes = right.ToBytes();
+            return GetDiff(leftBytes, rightBytes);
         }
 
         /// <summary>

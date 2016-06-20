@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using DiffService.Helpers;
 using DiffService.Helpers.UI;
@@ -85,13 +83,13 @@ namespace DiffService.Controllers
         {
             try
             {
-                var diffMap = new List<Tuple<int, string, string>>();
-                if (DiffChecker.AreEqualSize(_streams[LeftKey], _streams[RightKey]))
+                if (_streams?.Count > 0)
                 {
-                    diffMap = DiffChecker.GetDiff(_streams[LeftKey], _streams[RightKey]);
+                    var diffMap = DiffChecker.GetDiff(_streams[LeftKey], _streams[RightKey]);
+                    _streams.Clear();
+                    return Ok(diffMap);
                 }
-                _streams.Clear();
-                return Ok(diffMap);
+                return BadRequest();
             }
             catch
             {
